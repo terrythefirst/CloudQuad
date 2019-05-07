@@ -9,6 +9,11 @@ public class CLODUtil
 	int maxLevel;//最大树层数，从1开始数
 	int[][] treeData;
 	int[][] DHMatrix;//存储顶点dh的矩阵
+	public static final int span=8;
+	
+	public static int cameraX = 100;
+	public static int cameraZ = 100;
+	public static int movePace = 2;
 	
 	List<int[]> mesh=new ArrayList<int[]>();
 		
@@ -30,10 +35,16 @@ public class CLODUtil
 		modifyDHMatrix();
 		
 		//计算出第1层的中心点 行列号
+		
+	}
+	
+	public void genTerrain(){
+		mesh.clear();
 		int center=(hdtd.width)/((int)(Math.pow(2, 1)));	
 		traversal(center,center,hdtd.width);
 		traversalGenMesh(center,center,1);
 	}
+	
 	public int getRawHeight(int x,int z){
 		return hdtd.data[x][z];
 	}
@@ -150,7 +161,9 @@ public class CLODUtil
 		boolean blend;
 
 		//以下为考虑了与摄像机的距离作为是否拆分的计算方法
-		fViewDistance=1000;//frustum.distanceOfTwoPoints(centerQuad);  //计算与摄像机的距离
+		int scale = 100;
+		fViewDistance= (float)Math.abs(Math.sqrt((col*span-cameraX)*(col*span-cameraX)+(row*span-cameraZ)*(row*span-cameraZ)));//frustum.distanceOfTwoPoints(centerQuad);  //计算与摄像机的距离
+		fViewDistance*=scale;
 		int mfMinResolution = 4;
 		int mfDetailLevel =6;
 		f = fViewDistance/(edgeLength*mfMinResolution*mfDetailLevel*(Math.max(getDHMatrix(col,row),1.0f)));

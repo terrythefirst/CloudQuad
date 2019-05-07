@@ -2,36 +2,57 @@ package com.bn;
 
 import java.awt.*;
 import java.util.List;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.*;
 
 public class DrawPanel extends JPanel
 {
+	private Image ibuffer ;
 	private static final long serialVersionUID = 1L;
-	static final int span=8;
+	
 	HDTData hdtd;
 	int pwidth;
 	int pheight;
-	
+
 	CLODUtil cu;
 	
 	public DrawPanel(HDTData hdtd)
 	{
 		this.hdtd=hdtd;
-		pwidth=span*hdtd.width+20;
-		pheight=span*hdtd.height+20;
+		pwidth=CLODUtil.span*hdtd.width+20;
+		pheight=CLODUtil.span*hdtd.height+20;
 		this.setPreferredSize(new Dimension(pwidth,pheight));
-		
+
 		cu=new CLODUtil(hdtd);
 	}
-
+	
+	public void update(Graphics graphics) {
+        repaint();
+    }
 	@Override
-	public void paint(Graphics g)
-	{
-		g.setColor(Color.black);
-		g.fillRect(0, 0, pwidth,pheight);
+    public void paint(Graphics g) {
+    	//super.paint(g);
 		
-		g.setColor(Color.green);
+    	ibuffer = createImage(this.getWidth(),this.getHeight());
+    	Graphics gg = ibuffer.getGraphics();
+    	myPaint(gg);
+    	g.drawImage(ibuffer,0,0,this);
+    }
+    
+    public void myPaint(Graphics graphics) {
+    	//¿¹¾â³Ý(¼Óµ½»æ»­Ç°)
+		Graphics2D g2d=(Graphics2D) graphics;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		                      RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		cu.genTerrain();
+		
+		graphics.setColor(Color.black);
+		graphics.fillRect(0, 0, pwidth,pheight);
+		
+		graphics.setColor(Color.green);
 //		for(int i=0;i<hdtd.width;i++)
 //		{
 //			for(int j=0;j<hdtd.height;j++)
@@ -48,7 +69,12 @@ public class DrawPanel extends JPanel
 		List<int[]> mesh=cu.mesh;
 		for(int[] line:mesh)
 		{
-			g.drawLine(line[0]*span+10, line[1]*span+10, line[2]*span+10, line[3]*span+10);
+			graphics.drawLine(line[0]*CLODUtil.span+10, line[1]*CLODUtil.span+10, line[2]*CLODUtil.span+10, line[3]*CLODUtil.span+10);
 		}
+		
+		graphics.setColor(Color.orange);
+		graphics.fillOval(CLODUtil.cameraX-5, CLODUtil.cameraZ-5, 10, 10);
+		graphics.drawOval(CLODUtil.cameraX-10, CLODUtil.cameraZ-10, 20, 20);
+		graphics.drawOval(CLODUtil.cameraX-11, CLODUtil.cameraZ-11, 22, 22);
 	}
 }
