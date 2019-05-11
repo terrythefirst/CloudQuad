@@ -164,7 +164,7 @@ public class CLODUtil
 		int scale = 100;
 		fViewDistance= (float)Math.abs(Math.sqrt((col*span-cameraX)*(col*span-cameraX)+(row*span-cameraZ)*(row*span-cameraZ)));//frustum.distanceOfTwoPoints(centerQuad);  //计算与摄像机的距离
 		fViewDistance*=scale;
-		int mfMinResolution = 4;
+		int mfMinResolution = 6;
 		int mfDetailLevel =6;
 		f = fViewDistance/(edgeLength*mfMinResolution*mfDetailLevel*(Math.max(getDHMatrix(col,row),1.0f)));
 		
